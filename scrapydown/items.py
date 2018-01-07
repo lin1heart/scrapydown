@@ -10,4 +10,5 @@ import scrapy
 
 class ScrapydownItem(scrapy.Item):
     url = scrapy.Field()
+    title = scrapy.Field()
     images = scrapy.Field()
