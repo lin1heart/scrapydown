@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import scrapy
-import string
 from scrapy.selector import Selector
 from scrapydown.items import ScrapydownItem
 title = ''
@@ -34,7 +33,6 @@ class ScrapydowmSpider(scrapy.Spider):
             yield scrapy.http.Request('http://www.meizitu.com/a/' + next, callback=self.parse)
 
     def detil(self, response):
-#        global title
         sel = Selector(response)
         image_url = sel.xpath('//*[@id="picture"]/p/img/@src').extract()
         title = sel.xpath('//*[@id="picture"]/p/img/@alt')[0].extract()

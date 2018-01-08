@@ -29,7 +29,7 @@ ITEM_PIPELINES = {
 IMAGES_STORE = 'D:\\image_output'
 
 IMAGES_EXPIRES = 90
-#LOG_FILE="log.txt"
+LOG_FILE = "log.txt"
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
 

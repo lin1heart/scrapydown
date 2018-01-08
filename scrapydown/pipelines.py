@@ -9,7 +9,15 @@ from scrapy.exceptions import DropItem
 from scrapy import Request
 from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
-import scrapydown.spiders.scrapydowm
+import logging
+logging.warning("This is a warning")
+logging.log(logging.WARNING, "This is a warning")
+#获取实例对象
+logger=logging.getLogger()
+logger.warning("这是警告消息")
+#指定消息发出者
+logger = logging.getLogger('SimilarFace')
+logger.warning("This is a warning")
 
 class ScrapydownPipeline(ImagesPipeline):
 
@@ -29,9 +37,15 @@ class ScrapydownPipeline(ImagesPipeline):
             else:
                 name = 'error'
         name = self.format_str(name)
-#        print 'name is ', name
+        print 'nam ', name
+        if name =='':
+            name = 'error'
         image_guid = request.url.split('uploads')[-1].replace('/', '')
-        print image_guid
+        # self.logger.info('path is :', name)
+        # self.logger.info('Parse function called on %s', name)
+        # 方法2 自己定义个logger
+        logger.info('name is %s', image_guid)
+        logger.info('path is %s', name)
         return name+'/%s' % (image_guid)
     
     def item_completed(self, results, item, info):
