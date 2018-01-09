@@ -41,16 +41,11 @@ class ScrapydownPipeline(ImagesPipeline):
         if name =='':
             name = 'error'
         image_guid = request.url.split('uploads')[-1].replace('/', '')
-        # self.logger.info('path is :', name)
-        # self.logger.info('Parse function called on %s', name)
-        # 方法2 自己定义个logger
         logger.info('name is %s', image_guid)
         logger.info('path is %s', name)
         return name+'/%s' % (image_guid)
     
     def item_completed(self, results, item, info):
-        # print 'item is !!!!!', item
-        # print 'results is !!!!!', results
         image_paths = [x['path'] for ok, x in results if ok]
         if not image_paths:
             raise DropItem('图片未下载好 %s'%image_paths)
