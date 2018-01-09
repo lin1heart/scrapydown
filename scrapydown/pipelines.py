@@ -21,6 +21,10 @@ logger.warning("This is a warning")
 
 class ScrapydownPipeline(ImagesPipeline):
 
+#    def process_item(self, item, spider):  
+#        set_redis_values_1(item['url'])  
+#        return item  
+    
     def get_media_requests(self, item, info):
         for image_url in item['url']:
             yield Request(url=image_url, meta={'item': item, 'img_url':image_url})
