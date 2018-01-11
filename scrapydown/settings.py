@@ -13,7 +13,7 @@ BOT_NAME = 'scrapydown'
 
 SPIDER_MODULES = ['scrapydown.spiders']
 NEWSPIDER_MODULE = 'scrapydown.spiders'
-
+COMMANDS_MODULE = 'scrapydown.commands'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; AcooBrowser; .NET CLR 1.1.4322; .NET CLR 2.0.50727)"
@@ -54,11 +54,13 @@ USER_AGENT = [
     "Mozilla/5.0 (X11; U; Linux x86_64; zh-CN; rv:1.9.2.10) Gecko/20100922 Ubuntu/10.10 (maverick) Firefox/3.6.10"
 ]
 PROXIES = [
-    {'ip_port': '61.135.217.7'},
-    {'ip_port': '115.171.203.99:9000'},
-    {'ip_port': '113.78.65.41:9797'},
-    {'ip_port': '222.217.19.248:8080'},
-    {'ip_port': '120.25.253.234:8118'},
+#    {'ip_port': '180.118.94.150:9000'},
+    {'ip_port': '58.56.149.198:53281'},
+    {'ip_port': '183.129.160.75:3128'},
+#    {'ip_port': '118.178.227.171:80'},
+    {'ip_port': '39.108.171.142:80'},
+#    {'ip_port': '101.37.79.125:3128'},
+    {'ip_port': '118.193.107.219:80'},
 ]
 #PROXIES = [
 #    {'ip_port': '61.135.217.7', 'user_pass': ''},

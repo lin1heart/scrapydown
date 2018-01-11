@@ -1,14 +1,17 @@
 # coding=utf-8
 import requests
 import time
+import random
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from threading import Thread
 from Queue import Queue
+from scrapydown.settings import PROXIES
+from scrapydown.settings import USER_AGENT
 
 _BE_PROXY_QUEUE = Queue()
 path = 'mt_proxy.txt'
-
+ip_proxy = []
 
 class Consumer_Thread(Thread):
     def run(self):
@@ -17,8 +20,11 @@ class Consumer_Thread(Thread):
             p = _BE_PROXY_QUEUE.get()
             try:
                 if test_useful(p):
-                    with open(path, 'a') as f:
-                        f.write(p + '\n')
+                    with open(path, 'r') as f:
+                        al = f.read()
+                        if al.find(p) ==-1:
+                            with open(path, 'a') as f:
+                                f.write(p + '\n')
             except Exception, e:
                 print '[HERE]', e
                 pass
@@ -39,6 +45,7 @@ def test_useful(proxy):
 
 
 def get_proxies_from_KDL(max_page):
+    global ip_proxy
     print '[Scrapy] Start Scrapying Proxies in KDL'
 
     base_url = 'http://www.kuaidaili.com/free/'
@@ -54,18 +61,41 @@ def get_proxies_from_KDL(max_page):
         new_count = 0
         print 'PAGE', str(xici_page)
         xici_url = 'http://www.xicidaili.com/nt/' + str(xici_page)
-        headers = {
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36'}
+#        iplist=[]
+#        proxy_support = request.ProxyHandler({'http':random.choice(iplist)})
+#        opener = request.build_opener(proxy_support)
+#        opener.addheaders=[('User-Agent','Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36')]
+#        request.install_opener(opener)
+        user_agent = random.choice(USER_AGENT)
+        print ip_proxy
+        ip_li = random.choice(ip_proxy)
+        print ip_li
+        proxy = {'http': ip_li['ip_port']}
+        print proxy
+        headers = {'user-agent': user_agent}
+        sibs = []
         try:
-            rx = requests.get(xici_url, timeout=15, headers=headers)
+            rx = requests.get(xici_url, timeout=15, headers=headers, proxies=proxy)
+            p = requests.get('http://icanhazip.com', headers=headers, proxies=proxy)#获取真实的当前ip
+            print '真的ip', p.text
+            print 'proxy is', proxy
             bobj_2 = BeautifulSoup(rx.content.decode('utf-8'))
             sibs = bobj_2.findAll('table', {'id': 'ip_list'})[0].tr.next_siblings
         except Exception, e:
             try:
+                print 'error 1 proxy is', proxy
                 print 'error 1:', e
-                rx = requests.get(xici_url, timeout=15, headers=headers)
-                bobj_2 = BeautifulSoup(rx.content.decode('utf-8'))
-                sibs = bobj_2.findAll('table', {'id': 'ip_list'})[0].tr.next_siblings
+                print("ZZzzzz...")
+                time.sleep(3)
+                continue
+#                proxy = {'http': ip_li["ip_port"]}
+#                headers = {'user-agent': user_agent}
+#                rx = requests.get(xici_url, timeout=15, headers=headers, proxies=proxy)
+#                p = requests.get('http://icanhazip.com', headers=headers, proxies=proxy)
+#                print 'error 真的ip', p.text
+#                print 'error 1 proxy is', proxy
+#                bobj_2 = BeautifulSoup(rx.content.decode('utf-8'))
+#                sibs = bobj_2.findAll('table', {'id': 'ip_list'})[0].tr.next_siblings
 
             except Exception, e:
                 print 'error 2', e
@@ -143,12 +173,67 @@ def test_proxies_efficience(proxy):
     cost = time.time() - start
     print 'Without Proxy: cost ', cost / 3, ' seconds'
 
+#检查原文件中ip是否可用
+#def modifyip(sstr):
+#    try:
+#        with open(path, 'r') as f:
+#            lines = f.readlines()
+##        lines = open(path, 'r').readlines()
+#        flen = len(lines)
+#        for i in range(flen):
+#            if sstr in lines[i]:
+#                lines[i].remove
+#                lines[i] = lines[i].replace(sstr, rstr)
+#        open(path, 'w').writelines(lines)
+#    except Exception, e:
+#        print e
+
+#检查原文件中ip是否可用
+def checkip():
+    global ip_proxy
+    print '===============\n', '检查旧代理ip中', '\n===============\n'
+    try:
+        with open(path, 'r') as f:
+            lines = f.readlines()
+        flen = len(lines)
+        for i in range(flen):
+            if i ==0:
+                lines[i] = time.ctime()
+            if i>=2:
+                lines[i] = lines[i].strip()
+                if(ip_check(lines[i])):
+                    lines[i] = '\n'
+            else:
+                lines[i] = lines[i].strip()
+        for j in range(len(lines)):
+            if j>1:
+                if lines[j]!='\n':
+                    ip_proxy.append({'ip_port': lines[j]})
+        with open(path, 'w') as f:
+            for i in lines:
+                if i !='\n':
+                    f.write(i + '\n')
+    except Exception, e:
+        print e        
+
+def ip_check(proxy):
+    proxies = {'http': proxy}
+    try:
+        res = requests.get('http://www.baidu.com', proxies=proxies, timeout=10)
+    except:
+        print 'connect failed'
+        return True
+    else:
+        print 'success'
+        return False
 
 def main():
-    # 清空已有的文件
-    with open(path, 'w') as f:
-        f.write(time.ctime() + '\n')
-        f.write('========================\n')
+    # 检查已有的文件
+    checkip()
+    
+#    with open(path, 'w') as f:
+#        f.write(time.ctime() + '\n')
+#        f.write('========================\n')
     global _BE_PROXY_QUEUE
     max_thread = 100
     threads = []
