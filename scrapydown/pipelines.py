@@ -108,10 +108,15 @@ class MySQLPipeline(object):
 
     @staticmethod
     def _conditional_insert(tb, item):
-        ti = round(time.time()*1000)
-        print ti
+        ti = round(time.time() * 1000)
+        img0 = Image.open("D:\image_output\/" + item['images'][0])
+        title0 = item['images'][0].split('/')[0]
+        size0 = img0.size
+        tb.execute('insert into image_list (id, head_image, height, title, type, upload_dt, width) '
+                   'values (%s, %s, %s, %s, %s, %s, %s)',
+                   (ti, '3/' + item['images'][0], size0[1], title0, '3', ti, size0[0]))
         for a in item["images"]:
             img = Image.open("D:\image_output\/" + a)
             size = img.size
-            print 'size is !!!!\n', size[0], size[1]
-            tb.execute('insert into student (name, age) values (%s, %s)', ('3/' + a, ti))
+            tb.execute('insert into image_detail (width, height, image_list_id, url) values (%s, %s, %s, %s)',
+                       (size[0], size[1], ti, '3/' + a))
