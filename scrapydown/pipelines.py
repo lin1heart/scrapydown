@@ -29,6 +29,12 @@ logger = logging.getLogger('SimilarFace')
 logger.warning("This is a warning")
 
 
+class RedisInsert(object):  
+     
+    def process_item(self,item,spider):  
+        set_redis_values_1(item['url'])  
+        return item  
+
 class ScrapydownPipeline(ImagesPipeline):
 
     def get_media_requests(self, item, info):
@@ -47,7 +53,6 @@ class ScrapydownPipeline(ImagesPipeline):
             else:
                 name = 'error'
         name = self.format_str(name)
-        print 'nam ', name
         if name == '':
             name = 'error'
         image_guid = request.url.split('uploads')[-1].replace('/', '')
@@ -102,7 +107,6 @@ class MySQLPipeline(object):
     # pipeline默认调用
     def process_item(self, item, spider):
         d = self.dbpool.runInteraction(self._conditional_insert, item)
-        print 'd is !!!!!', d
         return d
 
     @staticmethod

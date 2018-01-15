@@ -149,7 +149,7 @@ MYSQL_PASSWD = 'root'
 # HTTPCACHE_DIR = 'httpcache'
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-IMAGES_STORE = '../3'
+IMAGES_STORE = '../../dbImage/3'
 IMAGES_EXPIRES = 90
 
 # LOG_FILE = "log.txt"
