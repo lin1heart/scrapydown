@@ -6,8 +6,7 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 import time
-from win32api import Sleep
-
+import logging
 import MySQLdb
 import MySQLdb.cursors
 from PIL import Image
@@ -16,7 +15,7 @@ from scrapy.exceptions import DropItem
 from scrapy import Request
 from PIL import ImageFile
 from twisted.enterprise import adbapi
-import logging
+from settings import IMAGES_STORE
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -109,14 +108,14 @@ class MySQLPipeline(object):
     @staticmethod
     def _conditional_insert(tb, item):
         ti = round(time.time() * 1000)
-        img0 = Image.open("D:\image_output\/" + item['images'][0])
+        img0 = Image.open(IMAGES_STORE + item['images'][0])
         title0 = item['images'][0].split('/')[0]
         size0 = img0.size
         tb.execute('insert into image_list (id, head_image, height, title, type, upload_dt, width) '
                    'values (%s, %s, %s, %s, %s, %s, %s)',
                    (ti, '3/' + item['images'][0], size0[1], title0, '3', ti, size0[0]))
         for a in item["images"]:
-            img = Image.open("D:\image_output\/" + a)
+            img = Image.open(IMAGES_STORE + a)
             size = img.size
             tb.execute('insert into image_detail (width, height, image_list_id, url) values (%s, %s, %s, %s)',
                        (size[0], size[1], ti, '3/' + a))

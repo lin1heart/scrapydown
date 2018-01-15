@@ -126,7 +126,7 @@ ITEM_PIPELINES = {
 MYSQL_HOST = 'localhost'
 MYSQL_DBNAME = 'yellow_page'
 MYSQL_USER = 'root'
-MYSQL_PASSWD = '123'
+MYSQL_PASSWD = 'root'
 # end of MySQL database configure setting
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -149,7 +149,7 @@ MYSQL_PASSWD = '123'
 # HTTPCACHE_DIR = 'httpcache'
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-IMAGES_STORE = 'D:\\image_output'
+IMAGES_STORE = '../3'
 IMAGES_EXPIRES = 90
 
 # LOG_FILE = "log.txt"
