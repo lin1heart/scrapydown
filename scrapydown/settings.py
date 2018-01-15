@@ -13,7 +13,7 @@ BOT_NAME = 'scrapydown'
 
 SPIDER_MODULES = ['scrapydown.spiders']
 NEWSPIDER_MODULE = 'scrapydown.spiders'
-COMMANDS_MODULE = 'scrapydown.commands'
+# COMMANDS_MODULE = 'scrapydown.commands'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; AcooBrowser; .NET CLR 1.1.4322; .NET CLR 2.0.50727)"
@@ -107,7 +107,7 @@ COOKIES_ENABLED = False
 DOWNLOADER_MIDDLEWARES = {
     #    'scrapydown.middlewares.ScrapydownDownloaderMiddleware': 543,
     'scrapydown.middlewares.RandomUserAgent': 1,
-    'scrapydown.middlewares.ProxyMiddleware': 100
+    # 'scrapydown.middlewares.ProxyMiddleware': 100
 }
 
 # Enable or disable extensions
@@ -119,14 +119,15 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'scrapydown.pipelines.ScrapydownPipeline': 1,
+    'scrapydown.pipelines.DuplicatesPipeline': 1,
+    'scrapydown.pipelines.ScrapydownPipeline': 200,
     'scrapydown.pipelines.MySQLPipeline': 300,
 }
 # start MySQL database configure setting
 MYSQL_HOST = 'localhost'
 MYSQL_DBNAME = 'yellow_page'
 MYSQL_USER = 'root'
-MYSQL_PASSWD = 'root'
+MYSQL_PASSWD = '123'
 # end of MySQL database configure setting
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -149,7 +150,7 @@ MYSQL_PASSWD = 'root'
 # HTTPCACHE_DIR = 'httpcache'
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-IMAGES_STORE = '../../dbImage/3'
+IMAGES_STORE = '../../dbImage/3/'
 IMAGES_EXPIRES = 90
 
 # LOG_FILE = "log.txt"

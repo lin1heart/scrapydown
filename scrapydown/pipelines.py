@@ -29,11 +29,19 @@ logger = logging.getLogger('SimilarFace')
 logger.warning("This is a warning")
 
 
-class RedisInsert(object):  
-     
-    def process_item(self,item,spider):  
-        set_redis_values_1(item['url'])  
-        return item  
+class DuplicatesPipeline(object):
+
+    def __init__(self):
+        self.url_seen = set()
+
+    def process_item(self, item, spider):
+        for url in item['url']:
+            if url in self.url_seen:  # 这里替换成你的item['#']
+                raise DropItem("Duplicate item found: %s" % item)
+                print '已存在！！！', url
+            else:
+                self.url_seen.add(url)  # 这里替换成你的item['#']
+        return item
 
 class ScrapydownPipeline(ImagesPipeline):
 
