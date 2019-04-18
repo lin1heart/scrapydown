@@ -19,4 +19,5 @@ settings.py文件中：
 
 ## Run
 根目录下运行run.py文件
+
     python run.py
