@@ -17,29 +17,6 @@ settings.py文件中：
     IMAGES_STORE = '../dbImage/2/'
 前4个全是数据库的配置，最后是图片保存路径，这里我用的是相对路径。
 
-middlewares.py文件中：
-
-    import random
-    from settings import USER_AGENT
-
-    # 随机使用预定义列表里的 User-Agent类
-    class RandomUserAgent(object):
-        def __init__(self, agents):
-            # 使用初始化的agents列表
-            self.agents = agents
-
-        @classmethod
-        def from_crawler(cls, crawler):
-            # 获取settings的USER_AGENT列表并返回
-            return cls(crawler.settings.getlist('USER_AGENTS'))
-
-        def process_request(self, request, spider):
-            # 随机设置Request报头header的User-Agent
-            new_user = random.choice(USER_AGENT)
-            print '*****USER_AGENT*****', new_user
-            request.headers.setdefault('User-Agent', new_user)
-USER_AGENT是settings.py文件中定义好的请求头部的User-Agent
-
 ## Run
 根目录下运行run.py文件
     python run.py
