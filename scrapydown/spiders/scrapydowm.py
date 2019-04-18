@@ -5,10 +5,10 @@ from scrapydown.items import ScrapydownItem
 title = ''
 class ScrapydowmSpider(scrapy.Spider):
     name = 'scrapydowm'
-    allowed_domains = ["meizitu.com"]
+    allowed_domains = ["win4000.com"]
 
     start_urls = [
-        'http://www.meizitu.com/a/more_1.html'
+        'http://www.win4000.com/meinvtag14366_1.html'
         # 'http://www.meizitu.com/a/5381.html'
     ]
     # wait_url = 'http://www.meizitu.com/a/'
@@ -19,27 +19,44 @@ class ScrapydowmSpider(scrapy.Spider):
         global detil_title
         global title
         sear = Selector(response)
-        total_ui = sear.xpath('//ul[@class="wp-list clearfix"]')
+        total_ui = sear.xpath('//div[@class="Left_bar"]')
         for each in total_ui:
-            detil_url = each.xpath('//li/div/h3/a/@href').extract()
-            detil_title = each.xpath('//li/div/h3/a/b/text()').extract()
+            detil_url = each.xpath('//div[@class="list_cont Left_list_cont  Left_list_cont2"]/div[@class="tab_tj"]/div/div/ul/li/a/@href').extract()
+            detil_title = each.xpath('//div[@class="list_cont Left_list_cont  Left_list_cont2"]/div[@class="tab_tj"]/div/div/ul/li/a/p/text()').extract()
+        print detil_title
         for a in detil_url:
             yield scrapy.http.Request(a, callback=self.detil)
             
-        next_url = sear.xpath('//*[@id="wp_page_numbers"]/ul/li')[-2].xpath('a/@href').extract()
+        next_url = sear.xpath('//div[@class="pages"]/div/a[@class="next"]/@href').extract()
         if next_url:
             next = next_url[0]
             print next
-            yield scrapy.http.Request('http://www.meizitu.com/a/' + next, callback=self.parse)
+            yield scrapy.http.Request(next, callback=self.parse)
 
     def detil(self, response):
         sel = Selector(response)
-        image_url = sel.xpath('//*[@id="picture"]/p/img/@src').extract()
-        title = sel.xpath('//*[@id="picture"]/p/img/@alt')[0].extract()
+        image_url = sel.xpath('//div[@class="pic-next-img"]/a/@href')[0].extract()
+        print image_url
+#        title = sel.xpath('//*[@class="ptitle"]/h1/test()')[0].extract()
+        number = sel.xpath('//div[@class="ptitle"]/em/text()')[0].extract()
+        number = int(number) +1;
+        print number
+        for nub in range(1,number):
+            nub_url = image_url.split('_')[0] + "_" + str(nub) + ".html"
+            nub_url = str(nub_url)
+            print nub_url
+            yield scrapy.http.Request(nub_url, callback=self.detilImg)
+
+#        else:
+#            title = title.split(u'第')[0].replace(u'，', '')
+        
+        
+    def detilImg(self,response):
+        sel = Selector(response)
+        image_url = sel.xpath('//div[@class="main-wrap"]/div[@id="pic-meinv"]/a/img/@url').extract()
+        title = sel.xpath('//div[@class="ptitle"]/h1/text()')[0].extract()
         if len(title) ==0:
             title = 'error'
-        else:
-            title = title.split(u'第')[0].replace(u'，', '')
         url_title = []
         for each in image_url:
             url_title.append(each + title)
@@ -47,7 +64,7 @@ class ScrapydowmSpider(scrapy.Spider):
         item['url'] = image_url
         item['title'] = url_title
         yield item
-        
+#        
     def is_chinese(self, uchar):
 #    """判断一个unicode是否是汉字"""
         if uchar >= u'\u4e00' and uchar <= u'\u9fa5':

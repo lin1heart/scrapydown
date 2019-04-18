@@ -63,7 +63,7 @@ class ScrapydownPipeline(ImagesPipeline):
         name = self.format_str(name)
         if name == '':
             name = 'error'
-        image_guid = request.url.split('uploads')[-1].replace('/', '')
+        image_guid = request.url.split('/')[-1]
         logger.info('name is %s', image_guid)
         logger.info('path is %s', name)
         return name + '/%s' % image_guid
@@ -125,9 +125,9 @@ class MySQLPipeline(object):
         size0 = img0.size
         tb.execute('insert into image_list (id, head_image, height, title, type, upload_dt, width) '
                    'values (%s, %s, %s, %s, %s, %s, %s)',
-                   (ti, '3/' + item['images'][0], size0[1], title0, '3', ti, size0[0]))
+                   (ti, '2/' + item['images'][0], size0[1], title0, '2', ti, size0[0]))
         for a in item["images"]:
             img = Image.open(IMAGES_STORE + a)
             size = img.size
             tb.execute('insert into image_detail (width, height, image_list_id, url) values (%s, %s, %s, %s)',
-                       (size[0], size[1], ti, '3/' + a))
+                       (size[0], size[1], ti, '2/' + a))
